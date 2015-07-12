@@ -1,11 +1,20 @@
 package com.hyman.hbase.crud;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
+import org.apache.hadoop.hbase.Cell;
 import org.apache.hadoop.hbase.HColumnDescriptor;
 import org.apache.hadoop.hbase.HTableDescriptor;
+import org.apache.hadoop.hbase.KeyValue;
 import org.apache.hadoop.hbase.TableName;
+import org.apache.hadoop.hbase.client.Get;
 import org.apache.hadoop.hbase.client.HBaseAdmin;
+import org.apache.hadoop.hbase.client.HConnection;
+import org.apache.hadoop.hbase.client.HConnectionManager;
+import org.apache.hadoop.hbase.client.HTableInterface;
+import org.apache.hadoop.hbase.client.Result;
 
 import com.hyman.hbase.util.HBaseUtil;
 
@@ -59,5 +68,28 @@ public class TableCRUD {
 		}
 	}
 	
+	
+	public List<KeyValue> list(List<Get> gets) throws IOException{
+		
+		List<KeyValue> ret = new ArrayList<KeyValue>();
+		
+		//HTable htable = new HTable(HBaseConfiguration.create(HBaseUtil.getConfiguration()),"user");
+		
+		HConnection connection = HConnectionManager.createConnection(HBaseUtil.getConfiguration());
+	    HTableInterface table = connection.getTable(TableName.valueOf("user"));
+		
+	    Result[] results = table.get(gets);
+	    
+	    
+	    for(Result result: results){
+	    	for (Cell cell : result.listCells()) {
+	              ret.add(new KeyValue(cell));
+	          }
+	    }
+	    
+	    table.close();
+	    connection.close();
+		return ret;
+	}
 	
 }
