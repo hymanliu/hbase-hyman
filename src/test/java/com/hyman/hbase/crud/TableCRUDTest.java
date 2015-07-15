@@ -2,7 +2,9 @@ package com.hyman.hbase.crud;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.hadoop.hbase.KeyValue;
 import org.apache.hadoop.hbase.client.Get;
@@ -43,14 +45,12 @@ public class TableCRUDTest {
 	    Get get1 = new Get("001".getBytes());
 	    get1.addColumn("info".getBytes(), "name".getBytes());
 	    gets.add(get1);
-	    
 		
-		List<KeyValue> list = table.list(gets);
+		List<KeyValue> list = table.list("user",gets);
 		
 		for(KeyValue kv : list){
 			
 			String row = Bytes.toString(kv.getRowArray(), kv.getRowOffset(), kv.getRowLength()); 
-			
 			String fc = Bytes.toString(kv.getFamilyArray(), kv.getFamilyOffset(), kv.getFamilyLength());
 			String qname = Bytes.toString(kv.getQualifierArray(), kv.getQualifierOffset(), kv.getQualifierLength());
 			String val = Bytes.toString(kv.getValueArray(), kv.getValueOffset(), kv.getValueLength());
@@ -58,4 +58,31 @@ public class TableCRUDTest {
 			System.out.println(row + "\t" + fc + "\t" +qname+ "\t" + val);
 		}
 	}
+	
+	
+	@Test
+	public void testPut(){
+		
+		Map<String,String> colums = new HashMap<String,String>();
+		colums.put("name", "cathy");
+		try {
+			table.put("user", "002", "info", colums);
+		} catch (IOException e) {
+			throw new RuntimeException();
+		}
+	}
+	
+	
+	@Test
+	public void delete(){
+		
+		try {
+			table.delete("user", "002");
+		} catch (IOException e) {
+			throw new RuntimeException();
+		}
+		
+	}
+	
+	
 }
