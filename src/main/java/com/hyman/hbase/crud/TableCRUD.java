@@ -46,7 +46,9 @@ public class TableCRUD {
 				hbaseAdmin.createTable(desc);
 			}
 		} catch (IOException e) {
-			e.printStackTrace();
+		
+		}finally{
+			IOUtils.closeStream(hbaseAdmin);
 		}
 	}
 	
@@ -64,10 +66,11 @@ public class TableCRUD {
 			}
 			hbaseAdmin.deleteTable(tableName);
 		} catch (IOException e) {
-			e.printStackTrace();
+			
+		}finally{
+			IOUtils.closeStream(hbaseAdmin);
 		}
 	}
-	
 	
 	public List<KeyValue> list(String tableName,List<Get> gets){
 		List<KeyValue> ret = new ArrayList<KeyValue>();
@@ -81,11 +84,13 @@ public class TableCRUD {
 		          }
 		    }
 		} catch (IOException e) {
+			
+		}
+		finally{
 			IOUtils.closeStream(table);
 		}
 		return ret;
 	}
-	
 	
 	public void put(String tableName,String rowId,String family,Map<String,String> colums){
 		HTable table = null;
@@ -97,6 +102,9 @@ public class TableCRUD {
 			}
 			table.put(put);
 		} catch (IOException e) {
+			
+		}
+		finally{
 			IOUtils.closeStream(table);
 		}
 	}
@@ -109,6 +117,8 @@ public class TableCRUD {
 			Delete delete = new Delete(Bytes.toBytes(rowId));
 			table.delete(delete);
 		} catch (IOException e) {
+			
+		}finally{
 			IOUtils.closeStream(table);
 		}
 	}
