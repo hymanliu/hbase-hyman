@@ -62,26 +62,14 @@ public class TableCRUDTest {
 	
 	@Test
 	public void testPut(){
-		
 		Map<String,String> colums = new HashMap<String,String>();
 		colums.put("name", "cathy");
-		try {
-			table.put("user", "002", "info", colums);
-		} catch (IOException e) {
-			throw new RuntimeException();
-		}
 	}
 	
 	
 	@Test
 	public void delete(){
-		
-		try {
-			table.delete("user", "002");
-		} catch (IOException e) {
-			throw new RuntimeException();
-		}
-		
+		table.delete("user", "002");
 	}
 	
 	
