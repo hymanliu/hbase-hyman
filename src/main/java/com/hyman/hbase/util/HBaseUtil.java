@@ -16,9 +16,6 @@ public class HBaseUtil {
 	public synchronized static Configuration getConfiguration(){
 		if(conf==null){
 			conf = HBaseConfiguration.create();
-//			conf.set("hbase.zookeeper.quorum", "hadoop-ehp.hyman.com");
-//			conf.set("hbase.rootdir", "hdfs://hadoop-ehp.hyman.com:8020/hbase");
-//			conf.set("hbase.zookeeper.property.clientPort", "2181");  
 		}
 		return conf;
 	}

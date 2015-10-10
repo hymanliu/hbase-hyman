@@ -64,6 +64,7 @@ public class TableCRUDTest {
 	public void testPut(){
 		Map<String,String> colums = new HashMap<String,String>();
 		colums.put("name", "cathy");
+		table.put(TABLE_NAME, "001", "fn1", colums);
 	}
 	
 	
