@@ -10,9 +10,9 @@ public class LibraryConfiguration {
 
 	public static Configuration configure() {
  	    Configuration config = HBaseConfiguration.create();
-		//config.set("hbase.master", "127.0.0.1:60010");
-	    config.set("hbase.zookeeper.quorum", "localhost:60010");
-	    config.set("hbase.zookeeper.property.clientPort", "2181");
+//		config.set("hbase.master", "127.0.0.1:60010");
+//	    config.set("hbase.zookeeper.quorum", "localhost:60010");
+//	    config.set("hbase.zookeeper.property.clientPort", "2181");
  	   return config;
 	}
 }

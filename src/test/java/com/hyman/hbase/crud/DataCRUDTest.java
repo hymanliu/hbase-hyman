@@ -12,41 +12,26 @@ import org.apache.hadoop.hbase.util.Bytes;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-public class TableCRUDTest {
+public class DataCRUDTest {
 
-	private static TableCRUD table = null;
+	public static final String FAMILY_NAME="info";
+	private static DataCRUD crud = null;
 	
-	public static final String TABLE_NAME="test1";
-	
-	public static final String FAMILY_NAME="fn1";
-
 	@BeforeClass
 	public static void init(){
-		table = new TableCRUD();
+		crud = new DataCRUD("test1");
 	}
-	
-	@Test
-	public void testDropTable(){
-		table.dropTable(TABLE_NAME);
-	}
-	
-	
-	@Test
-	public void testCreateTable(){
-		table.createTable(TABLE_NAME, FAMILY_NAME);
-	}
-	
 	
 	@Test
 	public void testList() throws IOException{
 		
 		List<Get> gets = new ArrayList<Get>(); 
 		    
-	    Get get1 = new Get("001".getBytes());
+	    Get get1 = new Get("01".getBytes());
 	    get1.addColumn("info".getBytes(), "name".getBytes());
 	    gets.add(get1);
 		
-		List<KeyValue> list = table.list("user",gets);
+		List<KeyValue> list = crud.list(gets);
 		
 		for(KeyValue kv : list){
 			
@@ -62,15 +47,17 @@ public class TableCRUDTest {
 	
 	@Test
 	public void testPut(){
-		Map<String,String> colums = new HashMap<String,String>();
-		colums.put("name", "cathy");
-		table.put(TABLE_NAME, "001", "fn1", colums);
+		for(int i=1;i<100;i++){
+			Map<String,String> colums = new HashMap<String,String>();
+			colums.put("name", "hyman-"+i);
+			crud.put(i+"", FAMILY_NAME, colums);
+		}
 	}
 	
 	
 	@Test
 	public void delete(){
-		table.delete("user", "002");
+		crud.delete("1");
 	}
 	
 	
