@@ -1,8 +1,6 @@
 package pigi.framework.general.logic;
 
 
-import java.util.List;
-
 import pigi.framework.general.descriptors.DataDescriptor;
 import pigi.framework.general.descriptors.IndexDescriptor;
 import pigi.framework.general.indexes.IndexException;
@@ -18,19 +16,17 @@ import pigi.framework.tools.HTableFactoryException;
  */
 public class DbLogic<T extends DataObject> {
 	private CRUD<T> crud;
-	private HTableFactory htableFactory;
     protected DataDescriptor<T> dataDescriptor;
 
 	public DbLogic(DataDescriptor<T> dataDescriptor) throws DbLogicException {
 	    if (dataDescriptor == null) throw new NullPointerException("Data Descriptor");
         this.dataDescriptor = dataDescriptor;
-		htableFactory = new HTableFactory();
 	}
 	
 	private synchronized CRUD<T> crud() throws DbLogicException {
 	    if (crud == null) {
 	        try {
-	            crud = new StandardCRUD<T>(htableFactory.getHTable(dataDescriptor.tableName()), dataDescriptor.familyName());
+	            crud = new StandardCRUD<T>(HTableFactory.getHTable(dataDescriptor.tableName()), dataDescriptor.familyName());
 	        } catch (HTableFactoryException e) {
 	            throw new DbLogicException(e);
 	        }

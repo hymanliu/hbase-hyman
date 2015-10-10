@@ -148,7 +148,7 @@ public class DataDescriptor<T extends DataObject> {
 
 	public void rebuildIndexes() throws HTableFactoryException, IOException, RowToolException, DbLogicException, IndexException {
         admin.createIndexTables();
-	    HTable table = new HTableFactory().getHTable(dataTableName);
+	    HTable table = HTableFactory.getHTable(dataTableName);
 	    RowTool rowTool = new RowTool();
 	    ResultScanner scanner = table.getScanner(new Scan(Keys.minId().getBytes(), Keys.maxId().getBytes()));
         try {

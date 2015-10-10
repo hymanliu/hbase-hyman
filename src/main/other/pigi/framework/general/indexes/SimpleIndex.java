@@ -18,6 +18,7 @@ import pigi.framework.general.views.SimpleIndexIterator;
 import pigi.framework.general.views.query.PageQuery;
 import pigi.framework.general.views.results.PageQueryResult;
 import pigi.framework.general.vo.DataObject;
+import pigi.framework.tools.HTableFactory;
 import pigi.framework.tools.HTableFactoryException;
 import pigi.framework.tools.RowToolException;
 import pigi.framework.tools.DataRow;
@@ -35,7 +36,7 @@ public class SimpleIndex<T extends DataObject> extends AbstractIndex<T> {
 		super(indexDescriptor, objectDescriptor);
 		this.name = indexDescriptor.getName();
 		try {
-			this.dataTable = tableFactory.getHTable(objectDescriptor.tableName());
+			this.dataTable = HTableFactory.getHTable(objectDescriptor.tableName());
 		} catch (HTableFactoryException e) {
 			throw new IndexException(e);
 		}

@@ -31,7 +31,6 @@ public abstract class AbstractIndex<T extends DataObject> implements Index<T> {
     protected transient Log logger = LogFactory.getLog(getClass());
 	protected IndexDescriptor<T> indexDescriptor;
 	protected DataDescriptor<T> dataDescriptor;
-    protected HTableFactory tableFactory;
     protected HTable indexTable;
     protected HTable pagesTable;
     protected HTable countersTable;
@@ -40,11 +39,10 @@ public abstract class AbstractIndex<T extends DataObject> implements Index<T> {
 	public AbstractIndex(IndexDescriptor<T> indexDescriptor, DataDescriptor <T> dataDescriptor) throws IndexException {
 		this.indexDescriptor = indexDescriptor;
 		this.dataDescriptor = dataDescriptor;
-        tableFactory = new HTableFactory();
         try {
-            this.indexTable = tableFactory.getHTable(indexDescriptor.indexTableName());
-            this.pagesTable = tableFactory.getHTable(indexDescriptor.pagesTableName());
-            this.countersTable = tableFactory.getHTable(indexDescriptor.countersTableName());
+            this.indexTable = HTableFactory.getHTable(indexDescriptor.indexTableName());
+            this.pagesTable = HTableFactory.getHTable(indexDescriptor.pagesTableName());
+            this.countersTable = HTableFactory.getHTable(indexDescriptor.countersTableName());
         } catch (HTableFactoryException e) {
             throw new IndexException(e);
         }

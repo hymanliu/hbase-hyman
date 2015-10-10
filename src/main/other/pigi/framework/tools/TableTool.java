@@ -21,7 +21,7 @@ public class TableTool {
 	private HBaseAdmin admin;
 
 	public TableTool() throws IOException, HTableFactoryException {
-        this.admin = new HTableFactory().getAdmin();
+        this.admin = HTableFactory.getAdmin();
 	}
 
 	public void createTableIfNotExists(String tableName, String... families) throws IOException {
