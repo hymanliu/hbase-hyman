@@ -5,7 +5,7 @@ import org.junit.Test;
 public class TableToolTest {
 
 	public static final String FAMILY_NAME="info";
-	public static final String TABLE_NAME = "test1";
+	public static final String TABLE_NAME = "user";
 	
 	
 	@Test
