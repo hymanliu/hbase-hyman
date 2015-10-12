@@ -9,6 +9,8 @@ import org.apache.hadoop.hbase.util.Bytes;
 
 public class Page<T> {
 	
+	private String currentPageStartRowkey = "";
+	
 	private int currentPageNo=1;//当前页码
 	private int pageSize=3;//每页显示行数
 	private int totalCount;//总行数

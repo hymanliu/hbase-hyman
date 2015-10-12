@@ -41,7 +41,8 @@ public class DataCRUDTest {
 	
 	@Test
 	public void testPageScan(){
-		Page<User> page = crud.scanPage("1", "50", 0, 10);
+		Page<User> page = crud.scanPage("", 0, 3);
+		
 		for(User u :page.getResultList()){
 			System.out.println(u);
 		}
@@ -51,26 +52,21 @@ public class DataCRUDTest {
 	public void testPut(){
 		for(int i=1;i<100;i++){
 			Map<String,String> colums = new HashMap<String,String>();
+			DecimalFormat df = new DecimalFormat("0000");
 			colums.put("name", "hyman-"+i);
-			colums.put("phone", "1868882"+i);
-			crud.put(i+"", colums);
+			colums.put("phone", "1868882"+df.format(i));
+			crud.put(df.format(i), colums);
 		}
 	}
 	
 	@Test
 	public void delete(){
-		crud.delete("1");
+		crud.delete("0000001");
 	}
 	
 	@Test
-	public void test(){
-		
-		DecimalFormat df1 = new DecimalFormat("00000");
-		System.out.println(df1.format(1));
-	}
-	@Test
 	public void testGet(){
-		User user = crud.get("3");
+		User user = crud.get("0000003");
 		System.out.println(user);
 	}
 }

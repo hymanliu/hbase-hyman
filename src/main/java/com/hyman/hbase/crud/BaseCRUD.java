@@ -11,7 +11,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.NavigableMap;
 
-import org.apache.commons.lang.StringUtils;
 import org.apache.hadoop.hbase.client.Delete;
 import org.apache.hadoop.hbase.client.Get;
 import org.apache.hadoop.hbase.client.HTable;
@@ -20,6 +19,9 @@ import org.apache.hadoop.hbase.client.Result;
 import org.apache.hadoop.hbase.client.ResultScanner;
 import org.apache.hadoop.hbase.client.RetriesExhaustedWithDetailsException;
 import org.apache.hadoop.hbase.client.Scan;
+import org.apache.hadoop.hbase.filter.Filter;
+import org.apache.hadoop.hbase.filter.FilterList;
+import org.apache.hadoop.hbase.filter.PageFilter;
 import org.apache.hadoop.hbase.util.Bytes;
 
 import com.hyman.hbase.entity.Page;
@@ -52,34 +54,46 @@ public abstract class BaseCRUD<T> implements CRUD<T>{
 	}
 	
 	@Override
-	public Page<T> scanPage(String startRow,String endRow, int index, int length){
-		
+	public Page<T> scanPage(String startRow, int offset, int limit){
 		Page<T> page = new Page<>();
-		
 		Scan scan = new Scan();
-		if(StringUtils.isNotBlank(startRow)){
+		
+		PageFilter pfilter = new PageFilter(limit);
+		//PrefixFilter filter = new PrefixFilter("002".getBytes());
+		
+		List<Filter> filters = new ArrayList<Filter>();
+		filters.add(pfilter);
+		FilterList filterList = new FilterList(filters);
+		
+		scan.setFilter(filterList);
+		
+		/*if(StringUtils.isNotBlank(startRow)){
 			scan.setStartRow(startRow.getBytes());
 		}
 		if(StringUtils.isNotBlank(endRow)){
 			scan.setStopRow(endRow.getBytes());
-		}
+		}*/
 		ResultScanner scanner = null;
 		try {
 			scanner = table.getScanner(scan);
 		} catch (IOException e) {
 		}
-		int i=0;
+		//int i=0;
 		
 		//PageFilter
 		List<T> list = new ArrayList<T>();
 		for(Result result :scanner){
-			if(i>=index && i<index+length){
-				T o = this.rowToClass(turnToRow(result));
-				if(o!=null){
-					list.add(o);
-				}
+//			if(i>=index && i<index+length){
+//				T o = this.rowToClass(turnToRow(result));
+//				if(o!=null){
+//					list.add(o);
+//				}
+//			}
+//			i++;
+			T o = this.rowToClass(turnToRow(result));
+			if(o!=null){
+				list.add(o);
 			}
-			i++;
 		}
 		page.setResultList(list);
 		return page;

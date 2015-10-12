@@ -3,7 +3,7 @@ package com.hyman.hbase.entity;
 import java.lang.reflect.Field;
 import java.util.Map;
 
-public class User{
+public class User {
 	private String id;
 	private String name;
 	private String phone;
