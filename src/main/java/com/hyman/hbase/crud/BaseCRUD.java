@@ -11,13 +11,18 @@ import java.util.List;
 import java.util.Map;
 import java.util.NavigableMap;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.hadoop.hbase.client.Delete;
 import org.apache.hadoop.hbase.client.Get;
 import org.apache.hadoop.hbase.client.HTable;
 import org.apache.hadoop.hbase.client.Put;
 import org.apache.hadoop.hbase.client.Result;
+import org.apache.hadoop.hbase.client.ResultScanner;
 import org.apache.hadoop.hbase.client.RetriesExhaustedWithDetailsException;
+import org.apache.hadoop.hbase.client.Scan;
 import org.apache.hadoop.hbase.util.Bytes;
+
+import com.hyman.hbase.entity.Page;
 
 public abstract class BaseCRUD<T> implements CRUD<T>{
 	
@@ -33,17 +38,51 @@ public abstract class BaseCRUD<T> implements CRUD<T>{
 	}
 	
 	@Override
-	public List<DataRow> list(List<Get> gets){
-		List<DataRow> ret = new ArrayList<DataRow>();
+	public List<T> list(List<Get> gets){
+		List<T> ret = new ArrayList<T>();
 		try {
 		    Result[] results = table.get(gets);
 		    for(Result result: results){
-		    	ret.add(this.turnToRow(result));
+		    	ret.add(this.rowToClass(turnToRow(result)));
 		    }
 		} catch (IOException e) {
 			
 		}
 		return ret;
+	}
+	
+	@Override
+	public Page<T> scanPage(String startRow,String endRow, int index, int length){
+		
+		Page<T> page = new Page<>();
+		
+		Scan scan = new Scan();
+		if(StringUtils.isNotBlank(startRow)){
+			scan.setStartRow(startRow.getBytes());
+		}
+		if(StringUtils.isNotBlank(endRow)){
+			scan.setStopRow(endRow.getBytes());
+		}
+		ResultScanner scanner = null;
+		try {
+			scanner = table.getScanner(scan);
+		} catch (IOException e) {
+		}
+		int i=0;
+		
+		//PageFilter
+		List<T> list = new ArrayList<T>();
+		for(Result result :scanner){
+			if(i>=index && i<index+length){
+				T o = this.rowToClass(turnToRow(result));
+				if(o!=null){
+					list.add(o);
+				}
+			}
+			i++;
+		}
+		page.setResultList(list);
+		return page;
 	}
 	
 	@Override
@@ -90,7 +129,6 @@ public abstract class BaseCRUD<T> implements CRUD<T>{
 		return get;
 	}
 
-	@SuppressWarnings("unused")
 	private T rowToClass(DataRow row){
 		if(row==null) return null;
 		T t = null;
