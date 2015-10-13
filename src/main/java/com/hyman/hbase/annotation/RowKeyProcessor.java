@@ -16,6 +16,5 @@ public class RowKeyProcessor implements Processor {
 				conf.setRowkey(rowKey.name());
 			}
 		}
-		
 	}
 }
