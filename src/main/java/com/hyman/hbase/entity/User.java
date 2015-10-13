@@ -3,9 +3,18 @@ package com.hyman.hbase.entity;
 import java.lang.reflect.Field;
 import java.util.Map;
 
+import com.hyman.hbase.annotation.Column;
+import com.hyman.hbase.annotation.RowKey;
+import com.hyman.hbase.annotation.Table;
+
+@Table(name="user")
 public class User {
+	
+	@RowKey(name="id")
 	private String id;
+	@Column(family="info",qualifier = "name")
 	private String name;
+	@Column(family="info",qualifier = "phone")
 	private String phone;
 	
 	public User(){}
