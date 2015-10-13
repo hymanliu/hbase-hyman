@@ -18,4 +18,6 @@ public interface CRUD<T> {
 	void delete(String rowId);
 
 	T get(String id);
+
+	Page<T> scanPage(String startRow, int fromIndex, int pageIndex, int pageSize);
 }

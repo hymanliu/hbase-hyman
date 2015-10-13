@@ -60,6 +60,14 @@ public class DataCRUDTest {
 	}
 	
 	@Test
+	public void testPageScan2(){
+		Page<User> page = crud.scanPage("0096",20,20,5);
+		for(User u :page.getResultList()){
+			System.out.println(u);
+		}
+	}
+	
+	@Test
 	public void delete(){
 		crud.delete("0000001");
 	}

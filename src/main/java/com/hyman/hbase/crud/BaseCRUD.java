@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.NavigableMap;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.hadoop.hbase.client.Delete;
 import org.apache.hadoop.hbase.client.Get;
 import org.apache.hadoop.hbase.client.HTable;
@@ -59,7 +60,6 @@ public abstract class BaseCRUD<T> implements CRUD<T>{
 		Scan scan = new Scan();
 		
 		PageFilter pfilter = new PageFilter(limit);
-		//PrefixFilter filter = new PrefixFilter("002".getBytes());
 		
 		List<Filter> filters = new ArrayList<Filter>();
 		filters.add(pfilter);
@@ -67,29 +67,13 @@ public abstract class BaseCRUD<T> implements CRUD<T>{
 		
 		scan.setFilter(filterList);
 		
-		/*if(StringUtils.isNotBlank(startRow)){
-			scan.setStartRow(startRow.getBytes());
-		}
-		if(StringUtils.isNotBlank(endRow)){
-			scan.setStopRow(endRow.getBytes());
-		}*/
 		ResultScanner scanner = null;
 		try {
 			scanner = table.getScanner(scan);
 		} catch (IOException e) {
 		}
-		//int i=0;
-		
-		//PageFilter
 		List<T> list = new ArrayList<T>();
 		for(Result result :scanner){
-//			if(i>=index && i<index+length){
-//				T o = this.rowToClass(turnToRow(result));
-//				if(o!=null){
-//					list.add(o);
-//				}
-//			}
-//			i++;
 			T o = this.rowToClass(turnToRow(result));
 			if(o!=null){
 				list.add(o);
@@ -98,6 +82,55 @@ public abstract class BaseCRUD<T> implements CRUD<T>{
 		page.setResultList(list);
 		return page;
 	}
+	
+	@Override
+	public Page<T> scanPage(String fromRowkey, int fromIndex, int pageIndex, int pageSize){
+		Page<T> page = new Page<>();
+		Scan scan = new Scan();
+		int limit= pageSize;
+		int offset = 0;
+		PageFilter pageFilter = null;
+		// 缓存1000条数据
+		scan.setCaching(1000);
+		if(pageIndex>=fromIndex){
+			limit = (pageIndex - fromIndex+1)*pageSize;
+			pageFilter = new PageFilter(limit);
+			if(StringUtils.isNotBlank(fromRowkey)){
+				scan.setStartRow(fromRowkey.getBytes());
+			}
+			offset = (pageIndex - fromIndex)*pageSize;
+		}else{
+			limit = pageIndex*pageSize;
+			pageFilter = new PageFilter(limit);
+			if(StringUtils.isNotBlank(fromRowkey)){
+				scan.setStopRow(fromRowkey.getBytes());
+			}
+			offset = (pageIndex-1) * pageSize;
+		}
+		scan.setFilter(pageFilter);
+		ResultScanner scanner = null;
+		try {
+			scanner = table.getScanner(scan);
+		} catch (IOException e) {
+		
+		}
+		
+		List<T> list = new ArrayList<T>();
+		int i = 0 ;
+		for(Result result :scanner){
+			if(i>=offset && list.size()<pageSize){
+				T o = this.rowToClass(turnToRow(result));
+				if(o!=null){
+					list.add(o);
+				}
+			}
+			i++;
+		}
+		page.setCurrentPageNo(pageIndex);
+		page.setResultList(list);
+		return page;
+	}
+	
 	
 	@Override
 	public T get(String id){
