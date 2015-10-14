@@ -1,7 +1,6 @@
 package com.hyman.hbase.crud;
 
 import java.util.List;
-import java.util.Map;
 
 import org.apache.hadoop.hbase.client.Get;
 
@@ -13,7 +12,7 @@ public interface CRUD<T> {
 	
 	Page<T> scanPage(String startRow, int limit);
 
-	void put(String rowId, Map<String, String> colums);
+	void put(T o);
 
 	void delete(String rowId);
 

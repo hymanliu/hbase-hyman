@@ -16,7 +16,6 @@ import com.hyman.hbase.entity.User;
 
 public class DataCRUDTest {
 
-	public static final String FAMILY_NAME="info";
 	private static UserCRUD crud = null;
 	
 	@BeforeClass
@@ -50,12 +49,13 @@ public class DataCRUDTest {
 	
 	@Test
 	public void testPut(){
-		for(int i=1;i<100;i++){
-			Map<String,String> colums = new HashMap<String,String>();
+		for(int i=100;i<200;i++){
+			User u = new User();
 			DecimalFormat df = new DecimalFormat("0000");
-			colums.put("name", "hyman-"+i);
-			colums.put("phone", "1868882"+df.format(i));
-			crud.put(df.format(i), colums);
+			u.setId(df.format(i));
+			u.setName("hyman-"+i);
+			u.setPhone("1868882"+df.format(i));
+			crud.put(u);
 		}
 	}
 	
@@ -69,12 +69,12 @@ public class DataCRUDTest {
 	
 	@Test
 	public void delete(){
-		crud.delete("0001");
+		crud.delete("0101");
 	}
 	
 	@Test
 	public void testGet(){
-		User user = crud.get("0003");
+		User user = crud.get("0103");
 		System.out.println(user);
 	}
 }

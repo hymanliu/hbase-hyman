@@ -1,10 +1,10 @@
 package com.hyman.hbase.crud;
 
 import java.io.IOException;
+import java.io.InterruptedIOException;
 import java.lang.reflect.Field;
 import java.lang.reflect.ParameterizedType;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.NavigableMap;
@@ -13,8 +13,10 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.hadoop.hbase.client.Delete;
 import org.apache.hadoop.hbase.client.Get;
 import org.apache.hadoop.hbase.client.HTable;
+import org.apache.hadoop.hbase.client.Put;
 import org.apache.hadoop.hbase.client.Result;
 import org.apache.hadoop.hbase.client.ResultScanner;
+import org.apache.hadoop.hbase.client.RetriesExhaustedWithDetailsException;
 import org.apache.hadoop.hbase.client.Scan;
 import org.apache.hadoop.hbase.filter.Filter;
 import org.apache.hadoop.hbase.filter.FilterList;
@@ -131,7 +133,6 @@ public abstract class BaseCRUD<T> implements CRUD<T>{
 		return page;
 	}
 	
-	
 	@Override
 	public T get(String id){
 		Get get = this.buildGet(id);
@@ -146,18 +147,14 @@ public abstract class BaseCRUD<T> implements CRUD<T>{
 	}
 	
 	@Override
-	public void put(String rowId,Map<String,String> colums){
-//		Put put = new Put(Bytes.toBytes(rowId));
-//		for(String key:colums.keySet()){
-//			put.add(FAMILY_NAME, Bytes.toBytes(key), Bytes.toBytes(colums.get(key)));
-//		}
-//		try {
-//			table.put(put);
-//		} catch (RetriesExhaustedWithDetailsException e) {
-//			e.printStackTrace();
-//		} catch (InterruptedIOException e) {
-//			e.printStackTrace();
-//		}
+	public void put(T o){
+		Put put = this.turnToPut(this.classToRow(o));
+		if(put==null) return;
+		try {
+			table.put(put);
+		} catch (RetriesExhaustedWithDetailsException | InterruptedIOException e) {
+			e.printStackTrace();
+		}
 	}
 	
 	@Override
@@ -196,20 +193,53 @@ public abstract class BaseCRUD<T> implements CRUD<T>{
 		return t;
 	}
 	
+	private DataRow classToRow(T o){
+		if(o==null) return null;
+		
+		DataRow row = new DataRow();
+		
+		Field rowKeyField = conf.getRowKeyField();
+		rowKeyField.setAccessible(true);
+		try {
+			row.setId((String) rowKeyField.get(o));
+			
+			for(Column column : conf.getColumns()){
+				Field field = conf.getField(column);
+				field.setAccessible(true);
+				row.putColumn(column, (String) field.get(o));
+			}
+		} catch (IllegalArgumentException | IllegalAccessException e) {
+			e.printStackTrace();
+		}
+		return row;
+	}
 	
 	private DataRow turnToRow(Result result){
 		if(result==null || result.isEmpty()) return null;
-		Map<Column,String> cols = new HashMap<Column,String>();
+		
+		DataRow row = new DataRow();
 
 		for(String family:conf.getFamilies()){
 			NavigableMap<byte[], byte[]> familyMap = result.getFamilyMap(family.getBytes());
 			for(byte[] qualifier : familyMap.keySet()){
 				String name = Bytes.toString(qualifier);
 				String value = Bytes.toString(familyMap.get(qualifier));
-				cols.put(new Column(family,name), value);
+				row.putColumn(new Column(family,name), value);
 			}
 		}
 		String id = Bytes.toString(result.getRow());
-		return new DataRow(id,cols) ;
+		row.setId(id);
+		return row ;
+	}
+	
+	
+	private Put turnToPut(DataRow row){
+		if(row ==null) return null;
+		Put put = new Put(Bytes.toBytes(row.getId()));
+		Map<Column,String> columnMap = row.getCols();
+		for(Column key:columnMap.keySet()){
+			put.add(key.getFamily().getBytes(), Bytes.toBytes(key.getQualifier()), Bytes.toBytes(columnMap.get(key)));
+		}
+		return put;
 	}
 }
