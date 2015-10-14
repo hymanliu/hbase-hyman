@@ -21,7 +21,7 @@ public class DataCRUDTest {
 	
 	@BeforeClass
 	public static void init(){
-		crud = new UserCRUD("user");
+		crud = new UserCRUD();
 	}
 	
 	@Test

@@ -14,6 +14,8 @@ public class RowKeyProcessor implements Processor {
 			if(field.isAnnotationPresent(RowKey.class)){
 				RowKey rowKey = field.getAnnotation(RowKey.class);
 				conf.setRowkey(rowKey.name());
+				conf.setRowKeyField(field);
+				break;
 			}
 		}
 	}

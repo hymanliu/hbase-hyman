@@ -6,7 +6,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-import com.hyman.hbase.annotation.Column;
+import com.hyman.hbase.annotation.Qualifier;
 import com.hyman.hbase.annotation.Table;
 import com.hyman.hbase.conf.TableConf;
 import com.hyman.hbase.entity.User;
@@ -29,8 +29,8 @@ public class TestAnnotation {
 		}
 		
 		for(Field field : fields){
-			if(field.isAnnotationPresent(Column.class)){
-				Column column = field.getAnnotation(Column.class);
+			if(field.isAnnotationPresent(Qualifier.class)){
+				Qualifier column = field.getAnnotation(Qualifier.class);
 				//System.out.println(column.family()+"\t"+column.qualifier());
 				
 				set.add(column.family());
@@ -45,8 +45,8 @@ public class TestAnnotation {
 		Field[] fields = clazz.getDeclaredFields();
 		
 		for(Field field : fields){
-			if(field.isAnnotationPresent(Column.class)){
-				Column column = field.getAnnotation(Column.class);
+			if(field.isAnnotationPresent(Qualifier.class)){
+				Qualifier column = field.getAnnotation(Qualifier.class);
 				String family = column.family();
 				
 				String qualifier = column.qualifier();

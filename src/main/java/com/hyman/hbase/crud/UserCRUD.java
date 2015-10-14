@@ -4,8 +4,4 @@ import com.hyman.hbase.entity.User;
 
 public class UserCRUD extends BaseCRUD<User> {
 
-	public UserCRUD(String tableName) {
-		super(tableName);
-	}
-
 }

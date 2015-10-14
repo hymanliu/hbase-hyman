@@ -9,6 +9,8 @@ public class TableProcessor implements Processor {
 		if(clazz.isAnnotationPresent(Table.class)){
 			Table table = clazz.getAnnotation(Table.class);
 			conf.setName(table.name());
+			String[] families = table.families();
+			conf.setFamilies(families);
 		}
 	}
 }

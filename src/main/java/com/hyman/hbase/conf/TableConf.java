@@ -1,6 +1,6 @@
 package com.hyman.hbase.conf;
 
-import java.util.ArrayList;
+import java.lang.reflect.Field;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
@@ -8,7 +8,9 @@ public class TableConf {
 
 	private String name;
 	private String rowkey;
-	private Map<String,Collection<String>> families = new HashMap<>();
+	private Field rowKeyField;
+	private String[] families;
+	private Map<Column,Field> columnFieldMap =  new HashMap<>();
 	
 	public String getName() {
 		return name;
@@ -16,42 +18,40 @@ public class TableConf {
 	public void setName(String name) {
 		this.name = name;
 	}
+	
 	public String getRowkey() {
 		return rowkey;
 	}
 	public void setRowkey(String rowkey) {
 		this.rowkey = rowkey;
 	}
-	public Map<String,Collection<String>> getFamilies() {
+	public String[] getFamilies() {
 		return families;
 	}
-	
-	public Collection<String> getQualifiers(String family) {
-		return families.get(family);
+	public void setFamilies(String[] families) {
+		this.families = families;
+	}
+	public Map<Column, Field> getColumnFieldMap() {
+		return columnFieldMap;
 	}
 	
-	public void addQualifier(String family,String qualifier){
-		Collection<String> c = families.get(family);
-		if(families.get(family) == null)
-		{
-		 c =  new ArrayList<String>();
-		 families.put(family, c);
-		}
-		c.add(qualifier);
+	public void putColumnField(Column column,Field field)
+	{
+		columnFieldMap.put(column, field);
 	}
 	
-	public Collection<String> getAllQualifiers() {
-		
-		Collection<String> ret = null;
-		
-		for(String key:families.keySet()){
-			Collection<String> c = families.get(key);
-			if(ret == null){
-				ret = c;
-			}else{
-				ret.addAll(c);
-			}
-		}
-		return ret;
+	public Collection<Column> getColumns(){
+		return columnFieldMap.keySet();
 	}
+	
+	public Field getField(Column column){
+		return columnFieldMap.get(column);
+	}
+	public Field getRowKeyField() {
+		return rowKeyField;
+	}
+	public void setRowKeyField(Field rowKeyField) {
+		this.rowKeyField = rowKeyField;
+	}
+	
 }
