@@ -41,7 +41,7 @@ public class DataCRUDTest {
 	
 	@Test
 	public void testPageScan(){
-		Page<User> page = crud.scanPage("", 0, 3);
+		Page<User> page = crud.scanPage("", 3);
 		
 		for(User u :page.getResultList()){
 			System.out.println(u);
@@ -69,12 +69,12 @@ public class DataCRUDTest {
 	
 	@Test
 	public void delete(){
-		crud.delete("0000001");
+		crud.delete("0001");
 	}
 	
 	@Test
 	public void testGet(){
-		User user = crud.get("0000003");
+		User user = crud.get("0003");
 		System.out.println(user);
 	}
 }

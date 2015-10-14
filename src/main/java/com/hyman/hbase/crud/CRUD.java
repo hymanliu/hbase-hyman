@@ -11,7 +11,7 @@ public interface CRUD<T> {
 
 	List<T> list(List<Get> gets);
 	
-	Page<T> scanPage(String startRow, int offset, int limit);
+	Page<T> scanPage(String startRow, int limit);
 
 	void put(String rowId, Map<String, String> colums);
 

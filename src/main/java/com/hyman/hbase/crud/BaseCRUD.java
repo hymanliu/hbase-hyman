@@ -55,7 +55,7 @@ public abstract class BaseCRUD<T> implements CRUD<T>{
 	}
 	
 	@Override
-	public Page<T> scanPage(String startRow, int offset, int limit){
+	public Page<T> scanPage(String startRow, int limit){
 		Page<T> page = new Page<>();
 		Scan scan = new Scan();
 		
