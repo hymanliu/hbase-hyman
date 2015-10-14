@@ -5,12 +5,12 @@
 
 	<property>
 		<name>dfs.namenode.secondary.http-address</name>
-		<value>hadoop110.hyman.com:50090</value>
+		<value>hadoop-ehp.hyman.com:50090</value>
 	</property>
 
 	<property>
 		<name>dfs.namenode.http-address</name>
-		<value>hadoop110.hyman.com:50070</value>
+		<value>hadoop-ehp.hyman.com:50070</value>
 	</property>
 	
 	<property>

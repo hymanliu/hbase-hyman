@@ -33,13 +33,15 @@ public abstract class BaseCRUD<T> implements CRUD<T>{
 	private HTable table;
 	private Class<T> clazz = null;
 	private TableConf conf = null;
+	private HTableFactory tableFactory = null;
 	
 	@SuppressWarnings("unchecked")
 	public BaseCRUD(){
+		tableFactory = HTableFactory.getInstance();
 		ParameterizedType type = (ParameterizedType) this.getClass().getGenericSuperclass();
 		clazz = (Class<T>) type.getActualTypeArguments()[0];
 		conf = ORMConfigContext.getInstance().getConfiguration().get(clazz);
-		this.table = HTableFactory.createHTable(conf.getName());
+		table = tableFactory.createHTable(clazz);
 	}
 	
 	@Override

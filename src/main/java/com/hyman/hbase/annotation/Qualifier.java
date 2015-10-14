@@ -9,6 +9,6 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 public @interface Qualifier {
 
-	 String qualifier();
-	 String family();
+	String family();
+	String qualifier();
 }

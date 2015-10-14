@@ -3,9 +3,7 @@ package com.hyman.hbase.crud;
 import java.io.IOException;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.apache.hadoop.hbase.client.Get;
 import org.junit.BeforeClass;

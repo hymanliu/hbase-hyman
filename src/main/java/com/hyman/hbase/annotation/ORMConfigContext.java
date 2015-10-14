@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.hyman.hbase.conf.TableConf;
+import com.hyman.hbase.entity.Student;
 import com.hyman.hbase.entity.User;
 
 public class ORMConfigContext {
@@ -13,22 +14,21 @@ public class ORMConfigContext {
 	private static ORMConfigContext instance;
 	
 	private final Map<Class<?>,TableConf> configuration = new HashMap<>();
+	private final List<Class<?>> clazzes = new ArrayList<Class<?>>();
 	
-	public Map<Class<?>, TableConf> getConfiguration() {
+	public final Map<Class<?>, TableConf> getConfiguration() {
 		return configuration;
 	}
 
-	private List<Class<?>> clazzes = null;
-	
 	private ORMConfigContext(){
 		//TODO
 		//load table Class
-		
-		// test code
-		clazzes = new ArrayList<Class<?>>();
 		clazzes.add(User.class);
+		clazzes.add(Student.class);
 		////
 	}
+	
+	
 	
 	public static ORMConfigContext getInstance(){
 		if(instance==null){
@@ -45,9 +45,9 @@ public class ORMConfigContext {
 				instance.configuration.put(clazz, conf);
 			}
 		}
-		
 		return instance;
 	}
 
+	
 	
 }

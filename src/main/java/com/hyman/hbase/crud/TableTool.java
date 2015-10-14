@@ -7,29 +7,25 @@ import org.apache.hadoop.hbase.HTableDescriptor;
 import org.apache.hadoop.hbase.TableName;
 import org.apache.hadoop.hbase.client.HBaseAdmin;
 
+import com.hyman.hbase.conf.TableConf;
 import com.hyman.hbase.util.HBaseUtil;
 
 public class TableTool {
 	
 	private static HBaseAdmin admin = HBaseUtil.getHBaseAdmin();
 	
-	/**
-	 * create tables
-	 * @param tableName
-	 * @param familyName
-	 */
-	public static void createTable(String tableName,String... families){
+	public static void createTable(TableConf conf){
 		
-		final TableName tn = TableName.valueOf(tableName);
+		final TableName tn = TableName.valueOf(conf.getName());
 		final HTableDescriptor tableDesc = new HTableDescriptor(tn);
 		
-		for(String family:families){
+		for(String family:conf.getFamilies()){
 			HColumnDescriptor familyDesc = new HColumnDescriptor(family);
 			tableDesc.addFamily(familyDesc);
 		}
 		HTableDescriptor desc = new HTableDescriptor(tableDesc);
 		try {
-			if(!admin.tableExists(tableName)){
+			if(!admin.tableExists(conf.getName())){
 				admin.createTable(desc);
 			}
 		} catch (IOException e) {
@@ -38,12 +34,9 @@ public class TableTool {
 	}
 	
 	
-	/**
-	 * delete table
-	 * @param tableName
-	 */
-	public static void dropTable(String tableName){
+	public static void dropTable(TableConf conf){
 		try {
+			String tableName = conf.getName();
 			if(!admin.tableExists(tableName)){
 				return;
 			}

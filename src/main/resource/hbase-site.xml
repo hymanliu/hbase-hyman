@@ -3,7 +3,7 @@
 <configuration>
 	<property>
 	  <name>hbase.rootdir</name>
-	  <value>hdfs://hadoop110.hyman.com:8020/hbase</value>
+	  <value>hdfs://hadoop-ehp.hyman.com:8020/hbase</value>
 	</property>
 	<property>
 	  <name>hbase.cluster.distributed</name>
@@ -11,7 +11,7 @@
 	</property>
 	<property>
 	  <name>hbase.zookeeper.quorum</name>
-	  <value>hadoop110.hyman.com</value>
+	  <value>hadoop-ehp.hyman.com</value>
 	</property>
 	<property>
 	  <name>dfs.replication</name>
